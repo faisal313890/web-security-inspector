@@ -1,0 +1,187 @@
+{
+  "tool": "Web Security Inspector",
+  "version": "0.2.0",
+  "report_id": "8d98c983-2bfc-45c8-9b12-a9aab4082dfe",
+  "observed_at_utc": "2026-10-25T10:30:34.659645+00:00",
+  "target": "http://127.0.0.1:37453/weak",
+  "completion": "complete",
+  "responses": [
+    {
+      "url": "http://127.0.0.1:37453/weak",
+      "status": 200,
+      "tls": null,
+      "headers": [
+        {
+          "name": "Server",
+          "value": "InspectorLab/1.0 "
+        },
+        {
+          "name": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "name": "X-Powered-By",
+          "value": "DemoFramework/0.0"
+        }
+      ],
+      "redirect_to": null
+    }
+  ],
+  "checks": [
+    {
+      "check": "HTTPS transport",
+      "status": "review",
+      "priority": "medium",
+      "evidence": "http://127.0.0.1:37453/weak",
+      "meaning": "This response was received over unencrypted HTTP.",
+      "suggested_fix": "Serve this page over HTTPS and redirect HTTP requests to HTTPS.",
+      "reference": "",
+      "assessment": "hardening_observation",
+      "not_assessed": [],
+      "id": "WSI-001"
+    },
+    {
+      "check": "HSTS max-age",
+      "status": "skipped",
+      "priority": "info",
+      "evidence": "IP-address target",
+      "meaning": "HSTS hosts must be domain names; IP-address targets are not applicable.",
+      "suggested_fix": "",
+      "reference": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Strict-Transport-Security",
+      "assessment": "not_assessed",
+      "not_assessed": [],
+      "id": "WSI-002"
+    },
+    {
+      "check": "Enforced CSP header",
+      "status": "review",
+      "priority": "medium",
+      "evidence": "Enforced: (absent); Report-only: (absent)",
+      "meaning": "No enforced CSP response header was observed. HTML meta policies and other application defenses were not inspected.",
+      "suggested_fix": "Design and test a CSP for the application; stage it in report-only mode before enforcement.",
+      "reference": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy",
+      "assessment": "hardening_observation",
+      "not_assessed": [
+        "HTML meta CSP",
+        "Effective policy strength",
+        "Actual browser enforcement and exploitability"
+      ],
+      "id": "WSI-003"
+    },
+    {
+      "check": "Frame embedding restriction",
+      "status": "review",
+      "priority": "medium",
+      "evidence": "frame-ancestors=[]; X-Frame-Options=(absent)",
+      "meaning": "A recognized restrictive framing policy was not confirmed. Custom allowlists require manual review; frame-ancestors overrides X-Frame-Options in modern browsers.",
+      "suggested_fix": "If embedding is unnecessary, use CSP frame-ancestors 'none'. Otherwise define the intended parent origins.",
+      "reference": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options",
+      "assessment": "hardening_observation",
+      "not_assessed": [],
+      "id": "WSI-004"
+    },
+    {
+      "check": "MIME sniffing protection",
+      "status": "review",
+      "priority": "low",
+      "evidence": "Header not observed.",
+      "meaning": "The expected nosniff value was not observed.",
+      "suggested_fix": "Send X-Content-Type-Options: nosniff and correct Content-Type values.",
+      "reference": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Content-Type-Options",
+      "assessment": "hardening_observation",
+      "not_assessed": [],
+      "id": "WSI-005"
+    },
+    {
+      "check": "Explicit referrer policy",
+      "status": "review",
+      "priority": "low",
+      "evidence": "Header not observed.",
+      "meaning": "An explicit restrictive response policy was not confirmed; modern browsers may still apply a protective default.",
+      "suggested_fix": "Choose an application-appropriate policy such as strict-origin-when-cross-origin.",
+      "reference": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referrer-Policy",
+      "assessment": "hardening_observation",
+      "not_assessed": [],
+      "id": "WSI-006"
+    },
+    {
+      "check": "Permissions policy",
+      "status": "info",
+      "priority": "info",
+      "evidence": "Header not observed.",
+      "meaning": "Review which browser features this application needs; header presence alone does not establish suitable restrictions.",
+      "suggested_fix": "Consider disabling unused features such as camera and microphone when appropriate.",
+      "reference": "",
+      "assessment": "context_required",
+      "not_assessed": [],
+      "id": "WSI-007"
+    },
+    {
+      "check": "Technology banners",
+      "status": "info",
+      "priority": "info",
+      "evidence": "{\"server\": \"InspectorLab/1.0 \", \"x-powered-by\": \"DemoFramework/0.0\"}",
+      "meaning": "Banners are informational and may be inaccurate. They do not establish that a software version is vulnerable.",
+      "suggested_fix": "Remove unnecessary detailed version banners where practical.",
+      "reference": "",
+      "assessment": "context_required",
+      "not_assessed": [],
+      "id": "WSI-008"
+    },
+    {
+      "check": "Cookie attributes",
+      "status": "review",
+      "priority": "low",
+      "evidence": "{\"name\": \"demo_session\", \"Secure\": false, \"HttpOnly\": false, \"SameSite\": \"(absent)\", \"observations\": [\"Secure not set\", \"HttpOnly not set\", \"SameSite not explicitly set\"], \"review_reasons\": [\"Secure not set: review transport exposure and cookie sensitivity\"], \"context_notes\": [\"JavaScript-readable cookies may intentionally omit HttpOnly; cookie purpose is unknown.\", \"Some browsers apply Lax by default; actual behavior depends on the browser and request context.\"], \"response_url\": \"http://127.0.0.1:37453/weak\"}",
+      "meaning": "Cookie configuration needs review; sensitivity, application use, and exploitability are unknown.",
+      "suggested_fix": "Review purpose first: use Secure for HTTPS cookies, HttpOnly when JS access is unnecessary, and SameSite appropriate to the application.",
+      "reference": "https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Cookies",
+      "assessment": "hardening_observation",
+      "not_assessed": [
+        "Cookie purpose and sensitivity",
+        "Actual session/CSRF protection",
+        "Browser acceptance and runtime cookie behavior"
+      ],
+      "id": "WSI-009"
+    }
+  ],
+  "summary": {
+    "pass": 0,
+    "review": 6,
+    "info": 2,
+    "skipped": 1
+  },
+  "coverage_gaps": [
+    {
+      "area": "Browser HSTS protection",
+      "status": "not_assessed",
+      "detail": "Preload lists, parent-domain policies, and stored browser state were not queried."
+    },
+    {
+      "area": "CSP effectiveness",
+      "status": "not_assessed",
+      "detail": "HTML meta policies, browser execution, and effective policy strength were not evaluated."
+    },
+    {
+      "area": "Cookie application context",
+      "status": "not_assessed",
+      "detail": "Cookie purpose, sensitivity, browser behavior, and authenticated flows were not evaluated."
+    },
+    {
+      "area": "Exploitability",
+      "status": "not_assessed",
+      "detail": "No exploit attempt or proof of a security vulnerability was performed."
+    }
+  ],
+  "notes": [
+    "The separate HTTP-root redirect probe was not run; the supplied URL chain is recorded below."
+  ],
+  "limitations": [
+    "Single-URL response-header inspection using ordinary GET requests; maximum six chain requests plus one optional HTTP-root probe.",
+    "No page body, JavaScript, authenticated flows, other endpoints, exploitability, SQL injection, XSS, access control, or CORS behavior was tested.",
+    "A pass means only the stated criterion was observed. Missing hardening does not prove an exploitable vulnerability; no overall security score is assigned.",
+    "Certificate verification uses the Python system trust configuration. Negotiated TLS data is not a full TLS configuration or revocation audit.",
+    "Cookie values and URL query strings are omitted from reports. URLs can still contain sensitive path segments; review before sharing.",
+    "DNS/public-IP checks and pinned connections apply at every requested hop. Redirects outside the hostname/www scope and HTTPS downgrades are not followed."
+  ]
+}
